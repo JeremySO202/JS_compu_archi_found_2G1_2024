@@ -1,4 +1,5 @@
 class Registro:
+
     def __init__(self):
         self.instruccion = None
         self.data = None

@@ -1,5 +1,5 @@
-class LoadWord:
-    def __init__(self, _destino, _inmediato, _fuente, _procesador):
+class StoreWord:
+    def __init__(self, _fuente, _inmediato, _destino, _procesador):
         self.destino = _destino
         self.inmediato = _inmediato
         self.fuente = _fuente
@@ -14,18 +14,18 @@ class LoadWord:
 
     def instruccion2(self):
         print("Obteniendo nueva direccion de memoria")
-        self.procesador.regALU.data = self.procesador.ALU.operar(self.procesador.regRF.data, self.inmediato, 0)
+        self.procesador.regALU.data = [None] * 2
+        self.procesador.regALU.data[0] = self.procesador.ALU.operar(self.destino, self.inmediato, 0)
+        self.procesador.regALU.data[1] = self.procesador.regRF.data
         print(self.procesador.regALU.data)
 
     def instruccion3(self):
-        print("Obteniendo dato de memoria")
-        self.procesador.regDM.data = self.procesador.DM.datos[self.procesador.regALU.data]
-        print(self.procesador.regDM.data)
+        print("Almacenando en direccion de memoria " + str(self.procesador.regALU.data[0]))
+        self.procesador.DM.datos[self.procesador.regALU.data[0]] = self.procesador.regALU.data[1]
+        print(self.procesador.regALU.data[1])
 
     def instruccion4(self):
-        print("Escribiendo en el registro " + str(self.destino))
-        self.procesador.RF.registros[self.destino] = self.procesador.regDM.data
-        print(self.procesador.RF.registros[self.destino])
+        print("StoreWord no escribe en registro")
 
 
     def ejecutar(self):
@@ -33,7 +33,7 @@ class LoadWord:
             fase = self.ejecucion.pop(0)
             fase()
         else:
-            print("No hay más fases para ejecutar en LoadWord.")
+            print("No hay más fases para ejecutar en StoreWord.")
 
 
 

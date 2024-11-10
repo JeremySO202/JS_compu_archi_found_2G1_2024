@@ -65,6 +65,7 @@ class Procesador:
             #FETCH
             print("Etapa FETCH")
             if self.PC < len(self.IM.instrucciones):
+                print("Cargando instruccion "+ str(self.PC))
                 self.regIM.instruccion = self.IM.instrucciones[self.PC]
             else:
                 print("No hay mas instrucciones")
