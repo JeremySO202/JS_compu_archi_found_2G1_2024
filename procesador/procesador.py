@@ -5,9 +5,7 @@ from elementosArquitectonicos.memoriaDatos import memoriaDatos
 from elementosArquitectonicos.memoriaInstrucciones import memoriaInstrucciones
 from elementosArquitectonicos.archivoRegistros import archivoRegistros
 from elementosNoArquitectonicos.registro import Registro
-from instrucciones.branch import Jump
-
-
+from instrucciones.branch import BranchEqual  # Importar BranchEqual
 
 class Procesador:
     def __init__(self):
@@ -20,18 +18,23 @@ class Procesador:
         self.regALU = Registro()
         self.DM = memoriaDatos()
         self.regDM = Registro()
-
+        self.jump_pending = False  # Señal para manejar saltos
 
     def cargarInstrucciones(self, instruccion):
         self.IM.instrucciones.append(instruccion)
 
-
+    def clear_pipeline(self):
+        """Limpia las etapas DECODE y EXECUTE del pipeline tras un salto."""
+        print("Limpiando pipeline tras el salto.")
+        time.sleep(0.1)
+        self.regIM.clear()  # Anular instrucción en DECODE
+        self.regRF.clear()  # Anular instrucción en EXECUTE
 
     def iniciarEjecucion(self):
         while True:
             # WRITEBACK
             print("Etapa WRITEBACK")
-            if self.regDM.instruccion != None:
+            if self.regDM.instruccion is not None:
                 self.regDM.instruccion.ejecutar()
                 self.regDM.clear()
             else:
@@ -39,7 +42,7 @@ class Procesador:
 
             # MEMORY
             print("Etapa MEMORY")
-            if self.regALU.instruccion != None:
+            if self.regALU.instruccion is not None:
                 self.regALU.instruccion.ejecutar()
                 self.regDM.instruccion = self.regALU.instruccion
                 self.regALU.clear()
@@ -48,7 +51,7 @@ class Procesador:
 
             # EXECUTE
             print("Etapa EXECUTE")
-            if self.regRF.instruccion != None:
+            if self.regRF.instruccion is not None:
                 self.regRF.instruccion.ejecutar()
                 self.regALU.instruccion = self.regRF.instruccion
                 self.regRF.clear()
@@ -57,32 +60,26 @@ class Procesador:
 
             # DECODE
             print("Etapa DECODE")
-            if self.regIM.instruccion != None:
+            if self.regIM.instruccion is not None:
                 self.regIM.instruccion.ejecutar()
                 self.regRF.instruccion = self.regIM.instruccion
-                self.regIM.clear()
             else:
                 print("No hay instrucción en esta etapa")
 
             # FETCH
             print("Etapa FETCH")
             if self.PC < len(self.IM.instrucciones):
-                print("Cargando instrucción " + str(self.PC))
+                print(f"Cargando instrucción {self.PC}")
                 self.regIM.instruccion = self.IM.instrucciones[self.PC]
+                self.PC += 1
             else:
                 print("No hay más instrucciones")
                 break  # Termina la ejecución si no hay más instrucciones
 
-            # NEXT PC
-            if isinstance(self.regIM.instruccion, Jump):
-                # El PC ya se ajusta en la ejecución de Jump
-                pass
-            else:
-                self.PC += 1  # Incrementar normalmente para otras instrucciones
-
             print("#####################################")
 
             time.sleep(1)
+
 
 
 

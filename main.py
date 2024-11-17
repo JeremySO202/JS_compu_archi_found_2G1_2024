@@ -7,7 +7,7 @@ from instrucciones.subi import Subi
 from instrucciones.and_ import And
 from instrucciones.or_ import Or
 from instrucciones.mov import Mov
-from instrucciones.branch import Jump  # Importar Jump desde branch.py
+from instrucciones.branch import BranchEqual  # Importar Jump desde branch.py
 
 from procesador.procesador import Procesador
 
@@ -15,30 +15,23 @@ procesador = Procesador()
 
 # Inicializar registros
 procesador.RF.registros[0] = 7
-procesador.RF.registros[1] = 6
-procesador.RF.registros[9] = 5
-procesador.RF.registros[10] = 10
+procesador.RF.registros[1] = 7  # Igual al registro 0 (para probar el salto)
+procesador.RF.registros[2] = 5
+procesador.RF.registros[3] = 10
 
-# Cargar instrucciones en el procesador
-procesador.cargarInstrucciones(Add(2, 0, 1, procesador))  # Suma
-procesador.cargarInstrucciones(Addi(3, 0, 3, procesador))  # Suma inmediata
+# Cargar instrucciones
+procesador.cargarInstrucciones(Add(4, 0, 2, procesador))  # Suma R4 = R0 + R2
+procesador.cargarInstrucciones(Sub(5, 3, 2, procesador))  # Resta R5 = R3 - R2
+procesador.cargarInstrucciones(BranchEqual(0, 1, 4, procesador))  # Salto si R0 == R1 (4 instrucciones adelante)
+procesador.cargarInstrucciones(And(6, 3, 2, procesador))  # AND (Se anulará si hay salto)
+procesador.cargarInstrucciones(Or(7, 0, 2, procesador))  # OR (Se anulará si hay salto)
+procesador.cargarInstrucciones(Mov(8, 42, procesador))  # MOV inmediato a R8 (Se anulará si hay salto)
 
-procesador.cargarInstrucciones(Sub(4, 0, 1, procesador))  # Resta
-procesador.cargarInstrucciones(Subi(5, 0, 3, procesador))  # Resta inmediata
+# Instrucciones después del salto
+procesador.cargarInstrucciones(Add(9, 0, 3, procesador))  # Suma R9 = R0 + R3
+procesador.cargarInstrucciones(Sub(10, 2, 3, procesador))  # Resta R10 = R2 - R3
+procesador.cargarInstrucciones(And(11, 1, 3, procesador))  # AND R11 = R1 & R3
+procesador.cargarInstrucciones(Or(12, 1, 2, procesador))  # OR R12 = R1 | R2
 
-procesador.cargarInstrucciones(And(6, 9, 10, procesador))  # AND
-procesador.cargarInstrucciones(Or(7, 9, 10, procesador))  # OR
-procesador.cargarInstrucciones(Mov(8, 54, procesador))  # MOV
-
-# Insertar una instrucción Jump
-procesador.cargarInstrucciones(Jump(3, procesador))  # Salta 3 instrucciones adelante
-
-# Agregar instrucciones que podrían ser saltadas
-procesador.cargarInstrucciones(Add(9, 1, 0, procesador))  # Se salta esta
-procesador.cargarInstrucciones(Or(10, 0, 1, procesador))  # Se salta esta también
-procesador.cargarInstrucciones(Sub(11, 9, 10, procesador))  # Se salta esta también
-
-procesador.cargarInstrucciones(And(12, 1, 9, procesador))  # Esta se ejecuta después del salto
-
-# Iniciar ejecución
+# Ejecutar el procesador
 procesador.iniciarEjecucion()
