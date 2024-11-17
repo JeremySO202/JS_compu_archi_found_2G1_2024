@@ -69,6 +69,7 @@ class Procesador:
                 self.regIM.instruccion = self.IM.instrucciones[self.PC]
             else:
                 print("No hay mas instrucciones")
+                break
 
 
             #NEXT PC

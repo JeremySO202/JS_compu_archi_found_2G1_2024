@@ -23,7 +23,7 @@ procesador.RF.registros[10] = 10;
 #procesador.cargarInstrucciones(StoreWord(1,-3,4,procesador))
 
 procesador.cargarInstrucciones(Add(2,0,1,procesador))
-procesador.cargarInstrucciones(Addi(3,0,3,procesador))
+procesador.cargarInstrucciones(Addi(3,0 ,3,procesador))
 
 procesador.cargarInstrucciones(Sub(4,0,1,procesador))
 procesador.cargarInstrucciones(Subi(5,0,3,procesador))
