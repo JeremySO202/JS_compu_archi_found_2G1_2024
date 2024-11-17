@@ -5,6 +5,8 @@ from elementosArquitectonicos.memoriaDatos import memoriaDatos
 from elementosArquitectonicos.memoriaInstrucciones import memoriaInstrucciones
 from elementosArquitectonicos.archivoRegistros import archivoRegistros
 from elementosNoArquitectonicos.registro import Registro
+from instrucciones.branch import Jump
+
 
 
 class Procesador:
@@ -29,11 +31,11 @@ class Procesador:
         while True:
             # WRITEBACK
             print("Etapa WRITEBACK")
-            if self.regDM.instruccion!=None:
+            if self.regDM.instruccion != None:
                 self.regDM.instruccion.ejecutar()
                 self.regDM.clear()
             else:
-                print("No hay instruccion en esta etapa")
+                print("No hay instrucción en esta etapa")
 
             # MEMORY
             print("Etapa MEMORY")
@@ -42,7 +44,7 @@ class Procesador:
                 self.regDM.instruccion = self.regALU.instruccion
                 self.regALU.clear()
             else:
-                print("No hay instruccion en esta etapa")
+                print("No hay instrucción en esta etapa")
 
             # EXECUTE
             print("Etapa EXECUTE")
@@ -51,7 +53,7 @@ class Procesador:
                 self.regALU.instruccion = self.regRF.instruccion
                 self.regRF.clear()
             else:
-                print("No hay instruccion en esta etapa")
+                print("No hay instrucción en esta etapa")
 
             # DECODE
             print("Etapa DECODE")
@@ -60,20 +62,23 @@ class Procesador:
                 self.regRF.instruccion = self.regIM.instruccion
                 self.regIM.clear()
             else:
-                print("No hay instruccion en esta etapa")
+                print("No hay instrucción en esta etapa")
 
-            #FETCH
+            # FETCH
             print("Etapa FETCH")
             if self.PC < len(self.IM.instrucciones):
-                print("Cargando instruccion "+ str(self.PC))
+                print("Cargando instrucción " + str(self.PC))
                 self.regIM.instruccion = self.IM.instrucciones[self.PC]
             else:
-                print("No hay mas instrucciones")
+                print("No hay más instrucciones")
+                break  # Termina la ejecución si no hay más instrucciones
 
-
-            #NEXT PC
-
-            self.PC = self.PC+1
+            # NEXT PC
+            if isinstance(self.regIM.instruccion, Jump):
+                # El PC ya se ajusta en la ejecución de Jump
+                pass
+            else:
+                self.PC += 1  # Incrementar normalmente para otras instrucciones
 
             print("#####################################")
 
