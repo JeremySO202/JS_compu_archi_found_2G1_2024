@@ -6,6 +6,8 @@ from elementosArquitectonicos.memoriaInstrucciones import memoriaInstrucciones
 from elementosArquitectonicos.archivoRegistros import archivoRegistros
 from elementosNoArquitectonicos.registro import Registro
 from instrucciones.branch import BranchEqual  # Importar BranchEqual
+from UnidadRiesgos.HazardControl import HazardUnit
+from UnidadRiesgos.HazardControl import BranchPredictor
 
 class Procesador:
     def __init__(self):
@@ -19,6 +21,10 @@ class Procesador:
         self.DM = memoriaDatos()
         self.regDM = Registro()
         self.jump_pending = False  # Señal para manejar saltos
+        self.hazard_unit = HazardUnit(self)  # Instanciar la unidad de hazard
+        self.misprediction_penalty = 0
+        self.branch_predictor = BranchPredictor(default_prediction=True)  # Predictor dinámico
+
 
     def cargarInstrucciones(self, instruccion):
         self.IM.instrucciones.append(instruccion)
@@ -32,6 +38,13 @@ class Procesador:
 
     def iniciarEjecucion(self):
         while True:
+
+            if self.misprediction_penalty > 0:
+                print(f"Ciclo desperdiciado por penalización. {self.misprediction_penalty} ciclos restantes.")
+                self.misprediction_penalty -= 1
+                time.sleep(1)
+                continue
+
             # WRITEBACK
             print("Etapa WRITEBACK")
             if self.regDM.instruccion is not None:
