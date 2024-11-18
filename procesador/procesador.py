@@ -21,9 +21,9 @@ class Procesador:
         self.DM = memoriaDatos()
         self.regDM = Registro()
         self.jump_pending = False  # Señal para manejar saltos
-        self.hazard_unit = HazardUnit(self)  # Instanciar la unidad de hazard
-        self.misprediction_penalty = 0
-        self.branch_predictor = BranchPredictor(default_prediction=True)  # Predictor dinámico
+        #self.hazard_unit = HazardUnit(self)  # Instanciar la unidad de hazard
+        #self.misprediction_penalty = 0
+        self.branch_predictor = BranchPredictor()  # Predictor dinámico
 
 
     def cargarInstrucciones(self, instruccion):
@@ -39,11 +39,11 @@ class Procesador:
     def iniciarEjecucion(self):
         while True:
 
-            if self.misprediction_penalty > 0:
-                print(f"Ciclo desperdiciado por penalización. {self.misprediction_penalty} ciclos restantes.")
-                self.misprediction_penalty -= 1
-                time.sleep(1)
-                continue
+            #if self.misprediction_penalty > 0:
+               # print(f"Ciclo desperdiciado por penalización. {self.misprediction_penalty} ciclos restantes.")
+                #self.misprediction_penalty -= 1
+                #time.sleep(1)
+                #continue
 
             # WRITEBACK
             print("Etapa WRITEBACK")
