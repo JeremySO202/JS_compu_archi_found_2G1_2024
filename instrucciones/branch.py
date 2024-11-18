@@ -21,29 +21,13 @@ class BranchEqual:
         )
         print(f"Resultado de la resta: {self.procesador.regALU.data}")
 
-        # Consultar el predictor
-        instruction_id = id(self)  # Identificador único para esta instrucción
-        predicted_taken = self.procesador.branch_predictor.predict(instruction_id)
-        print(f"Predicción del salto (taken): {predicted_taken}")
-
-        # Evaluar el resultado real
-        actual_outcome = self.procesador.regALU.data == 0
-        print(f"Resultado real del salto (taken): {actual_outcome}")
-
-        # Si la predicción fue incorrecta
-        if predicted_taken != actual_outcome:
-            print("Predicción incorrecta. Activando Hazard Unit.")
-            self.procesador.hazard_unit.handle_misprediction()
-
-        # Realizar el salto si corresponde
-        if actual_outcome:  # Salto se toma
+        # Si la resta da 0, realizar el salto ajustando el PC
+        if self.procesador.regALU.data == 0:
             print(f"Registros iguales. Realizando salto con offset {self.offset}.")
-            self.procesador.PC += self.offset - 1
-        else:  # Salto no se toma
+            self.procesador.PC += self.offset - 1  # Ajustar el incremento automático en FETCH
+            self.procesador.clear_pipeline()  # Limpiar DECODE y EXECUTE
+        else:
             print("Registros no son iguales. Continuando normalmente.")
-
-        # Actualizar el predictor
-        self.procesador.branch_predictor.update(instruction_id, actual_outcome)
 
     def instruccion3(self):
         print("Finalizando BranchEqual. No hay resultado que guardar en registros.")
@@ -57,5 +41,4 @@ class BranchEqual:
             fase()
         else:
             print("No hay más fases para ejecutar en BranchEqual.")
-
 
