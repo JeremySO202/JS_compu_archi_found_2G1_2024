@@ -20,30 +20,23 @@ class Procesador:
         self.regALU = Registro()
         self.DM = memoriaDatos()
         self.regDM = Registro()
-        self.jump_pending = False  # Señal para manejar saltos
-        #self.hazard_unit = HazardUnit(self)  # Instanciar la unidad de hazard
-        #self.misprediction_penalty = 0
-        self.branch_predictor = BranchPredictor()  # Predictor dinámico
-
-
-    def cargarInstrucciones(self, instruccion):
-        self.IM.instrucciones.append(instruccion)
+        self.jump_pending = False
+        self.hazard_unit = HazardUnit(self)  # Instancia de HazardUnit
+        self.branch_predictor = BranchPredictor(default_prediction=True)  # Instancia de BranchPredictor
+        self.misprediction_penalty = 0
 
     def clear_pipeline(self):
-        """Limpia las etapas DECODE y EXECUTE del pipeline tras un salto."""
         print("Limpiando pipeline tras el salto.")
-        time.sleep(0.1)
-        self.regIM.clear()  # Anular instrucción en DECODE
-        self.regRF.clear()  # Anular instrucción en EXECUTE
+        self.regIM.clear()
+        self.regRF.clear()
 
     def iniciarEjecucion(self):
         while True:
-
-            #if self.misprediction_penalty > 0:
-               # print(f"Ciclo desperdiciado por penalización. {self.misprediction_penalty} ciclos restantes.")
-                #self.misprediction_penalty -= 1
-                #time.sleep(1)
-                #continue
+            if self.misprediction_penalty > 0:
+                print(f"Ciclo desperdiciado por penalización. {self.misprediction_penalty} ciclos restantes.")
+                self.misprediction_penalty -= 1
+                time.sleep(1)
+                continue
 
             # WRITEBACK
             print("Etapa WRITEBACK")
@@ -65,7 +58,18 @@ class Procesador:
             # EXECUTE
             print("Etapa EXECUTE")
             if self.regRF.instruccion is not None:
-                self.regRF.instruccion.ejecutar()
+                if isinstance(self.regRF.instruccion, BranchEqual):
+                    instruction_id = id(self.regRF.instruccion)
+                    predicted_taken = self.branch_predictor.predict(instruction_id)
+                    self.regRF.instruccion.ejecutar()
+                    actual_taken = self.regALU.data == 0
+                    print(f"Predicción del salto (taken): {predicted_taken}")
+                    print(f"Resultado real del salto (taken): {actual_taken}")
+                    if predicted_taken != actual_taken:
+                        self.hazard_unit.handle_misprediction()  # Usar HazardUnit
+                    self.branch_predictor.update(instruction_id, actual_taken)  # Actualizar predictor
+                else:
+                    self.regRF.instruccion.ejecutar()
                 self.regALU.instruccion = self.regRF.instruccion
                 self.regRF.clear()
             else:
@@ -87,15 +91,7 @@ class Procesador:
                 self.PC += 1
             else:
                 print("No hay más instrucciones")
-                break  # Termina la ejecución si no hay más instrucciones
+                break
 
             print("#####################################")
-
             time.sleep(1)
-
-
-
-
-
-
-
