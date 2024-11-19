@@ -1,12 +1,14 @@
 from instrucciones.add import Add
-from instrucciones.addi import Addi
+from instrucciones.sub import Sub
+from instrucciones.and_ import And
+from instrucciones.or_ import Or
 class HazardControl:
     def __init__(self, procesador):
         self.procesador = procesador
 
     def check_forwarding(self, current_instruction):
         """Verifica y aplica forwarding para instrucciones que usan registros."""
-        if not isinstance(current_instruction, Add):
+        if not isinstance(current_instruction, (Add, Sub, Or, And)):
             print("No se aplica forwarding: instrucción no es de tipo Add.")
             return  # Por ahora, solo procesamos instrucciones tipo Add
 
@@ -50,13 +52,27 @@ class HazardControl:
         print(f"Forwarding directo desde EXECUTE al destino R{destino}")
         # Actualiza el valor en el archivo de registros
         self.procesador.RF.registros[destino] = resultado
+
+        # Si no hay instrucción en DECODE, no es necesario imprimir mensajes adicionales
+        if not self.procesador.regRF.instruccion:
+            return
+
+        # Bandera para detectar si hubo forwarding
+        forwarding_applied = False
+
         # Si hay instrucciones esperando este valor, lo forwardea a ellas
-        if self.procesador.regRF.instruccion:
-            inst = self.procesador.regRF.instruccion
-            if isinstance(inst, Add):
-                if inst.registro1 == destino:
-                    print(f"Forwarding R{destino} a registro1 en DECODE.")
-                    self.procesador.regRF.data[0] = resultado
-                if inst.registro2 == destino:
-                    print(f"Forwarding R{destino} a registro2 en DECODE.")
-                    self.procesador.regRF.data[1] = resultado
+        inst = self.procesador.regRF.instruccion
+        if isinstance(inst, (Add, Sub, Or, And)):
+            if inst.registro1 == destino and self.procesador.regRF.data[0] is None:
+                print(f"Forwarding R{destino} a registro1 en DECODE.")
+                self.procesador.regRF.data[0] = resultado
+                forwarding_applied = True
+            if inst.registro2 == destino and self.procesador.regRF.data[1] is None:
+                print(f"Forwarding R{destino} a registro2 en DECODE.")
+                self.procesador.regRF.data[1] = resultado
+                forwarding_applied = True
+
+        # Mensaje si no hubo necesidad de aplicar forwarding
+        if not forwarding_applied:
+            print(f"No hubo necesidad de aplicar forwarding desde EXECUTE para el destino R{destino}.")
+

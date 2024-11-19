@@ -8,6 +8,9 @@ from elementosNoArquitectonicos.registro import Registro
 from instrucciones.branch import BranchEqual  # Importar BranchEqual
 from UnidadRiesgos.HazardControl import HazardControl
 from instrucciones.add import Add
+from instrucciones.sub import Sub
+from instrucciones.and_ import And
+from instrucciones.or_ import Or
 
 class Procesadorf:
     def __init__(self):
@@ -57,7 +60,7 @@ class Procesadorf:
             if self.regRF.instruccion is not None:
                 self.regRF.instruccion.ejecutar()
                 # Enviar resultado al HazardControl
-                if isinstance(self.regRF.instruccion, Add):
+                if isinstance(self.regRF.instruccion, (Add, Sub, Or, And)):
                     destino = self.regRF.instruccion.destino
                     resultado = self.regALU.data  # Resultado de la ALU
                     self.hazard_control.forward_from_execute(destino, resultado)
@@ -76,7 +79,7 @@ class Procesadorf:
                     self.regRF.data = [None, None]
 
                 # Inicializar registros si no se forwardeó nada
-                if isinstance(self.regIM.instruccion, Add):
+                if isinstance(self.regIM.instruccion, (Add, Sub, Or, And)):
                     if not self.regIM.instruccion.procesador.regRF.data:
                         self.regIM.instruccion.procesador.regRF.data = [
                             self.RF.registros[self.regIM.instruccion.registro1],

@@ -23,9 +23,9 @@ procesador.RF.registros[10] = 10;
 #procesador.cargarInstrucciones(StoreWord(1,-3,4,procesador))
 
 procesador.cargarInstrucciones(Add(2, 0, 1, procesador))  # R2 = R0 + R1
-procesador.cargarInstrucciones(Add(3, 0, 1, procesador))  # R3 = R2 + R1
-procesador.cargarInstrucciones(Add(4, 0, 1, procesador))  # R4 = R3 + R2
-procesador.cargarInstrucciones(Add(5, 1, 1, procesador))
+procesador.cargarInstrucciones(Add(3, 2, 1, procesador))  # R3 = R2 + R1
+procesador.cargarInstrucciones(Sub(4, 3, 1, procesador))  # R4 = R3 + R2
+procesador.cargarInstrucciones(And(5, 1, 4, procesador))
 procesador.cargarInstrucciones(Add(5,9,10,procesador))
 
 
