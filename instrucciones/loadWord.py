@@ -5,10 +5,10 @@ class LoadWord:
         self.fuente = _fuente
         self.procesador = _procesador
 
-        self.ejecucion = [self.instruccion1, self.instruccion2, self.instruccion3,self.instruccion4]
+        self.ejecucion = [self.instruccion1, self.instruccion2, self.instruccion3, self.instruccion4]
 
     def instruccion1(self):
-        print("Obteniendo de registro "+str(self.fuente))
+        print("Obteniendo de registro " + str(self.fuente))
         self.procesador.regRF.data = self.procesador.RF.registros[self.fuente]
         print(self.procesador.regRF.data)
 
@@ -27,17 +27,9 @@ class LoadWord:
         self.procesador.RF.registros[self.destino] = self.procesador.regDM.data
         print(self.procesador.RF.registros[self.destino])
 
-
     def ejecutar(self):
         if self.ejecucion:
             fase = self.ejecucion.pop(0)
             fase()
         else:
             print("No hay más fases para ejecutar en LoadWord.")
-
-
-
-
-
-
-

@@ -4,7 +4,7 @@ from instrucciones.sub import Sub
 from instrucciones.and_ import And
 from instrucciones.or_ import Or
 from instrucciones.mov import Mov
-from procesador.procesador import Procesador
+from procesador.procesadorBranchPrediction import Procesador
 
 procesador = Procesador()
 
@@ -73,6 +73,3 @@ procesador.cargarInstrucciones(Or(10, 1, 6, procesador))  # R10 = R1 | R6
 
 # Iniciar ejecución
 procesador.iniciarEjecucion()
-
-
-

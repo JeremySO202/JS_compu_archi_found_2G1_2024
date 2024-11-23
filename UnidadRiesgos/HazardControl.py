@@ -1,12 +1,13 @@
-class HazardUnit:
+class HazardControl:
     def __init__(self, procesador):
         self.procesador = procesador
 
-    def handle_misprediction(self):
+    def handle_misprediction(self, instruction):
         """Maneja la penalización por predicción incorrecta."""
         print("Predicción incorrecta detectada. Penalización aplicada.")
         self.procesador.clear_pipeline()
-        self.procesador.misprediction_penalty = 3  # Penalización por mal predicción
+        self.procesador.PC -= instruction.offset + 1  # Penalización por mal predicción
+
 
 class BranchPredictor:
     def __init__(self, default_prediction=False):
@@ -30,4 +31,3 @@ class BranchPredictor:
     def reset(self):
         """Resetea el historial dinámico."""
         self.history = {}
-
