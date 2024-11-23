@@ -5,7 +5,7 @@ class Addi:
         self.inmediate = _inmediate
         self.procesador = _procesador
 
-        self.ejecucion = [self.instruccion1, self.instruccion2, self.instruccion3,self.instruccion4]
+        self.ejecucion = [self.instruccion1, self.instruccion2, self.instruccion3]
 
     def instruccion1(self):
         print("Obteniendo de registro "+str(self.registro1))
@@ -26,8 +26,6 @@ class Addi:
         self.procesador.RF.registros[self.destino] = self.procesador.regALU.data
         print(str(self.procesador.RF.registros[self.destino]) + " en: " + str(self.destino))
 
-    def instruccion4(self):
-        pass
 
 
     def ejecutar(self):
@@ -35,7 +33,7 @@ class Addi:
             fase = self.ejecucion.pop(0)
             fase()
         else:
-            print("No hay más fases para ejecutar en Add.")
+            print("No hay más fases para ejecutar en AddI.")
 
 
 

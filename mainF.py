@@ -9,10 +9,10 @@ from instrucciones.and_ import And
 from instrucciones.or_ import Or
 from instrucciones.mov import Mov
 
-from procesador.procesador import Procesador
+from procesador.procesadorForwarding import ProcesadorForwarding
 
 
-procesador = Procesador()
+procesador = ProcesadorForwarding()
 
 procesador.RF.registros[0] = 7;
 procesador.RF.registros[1] = 7;
@@ -22,19 +22,14 @@ procesador.RF.registros[10] = 10;
 
 #procesador.cargarInstrucciones(StoreWord(0,-4,4,procesador))
 #procesador.cargarInstrucciones(StoreWord(1,-3,4,procesador))
-
-procesador.cargarInstrucciones(BranchEqual(0,1,4,procesador))
-
-procesador.cargarInstrucciones(Add(2,0,1,procesador))
-procesador.cargarInstrucciones(Addi(3,0 ,3,procesador))
-
-procesador.cargarInstrucciones(Sub(4,0,1,procesador))
-procesador.cargarInstrucciones(Subi(5,0,3,procesador))
-
-procesador.cargarInstrucciones(And(6,9,10,procesador))
-procesador.cargarInstrucciones(Or(7,9,10,procesador))
-procesador.cargarInstrucciones(Mov(8,54,procesador))
-
+procesador.cargarInstrucciones(BranchEqual(0,1,2,procesador))
+procesador.cargarInstrucciones(Add(2, 0, 1, procesador))  # R2 = R0 + R1
+procesador.cargarInstrucciones(Add(3, 2, 1, procesador))  # R3 = R2 + R1
+procesador.cargarInstrucciones(Sub(4, 10, 9, procesador))
+procesador.cargarInstrucciones(Add(5,9,10,procesador))
+procesador.cargarInstrucciones(And(5, 1, 4, procesador))
+procesador.cargarInstrucciones(LoadWord(8,3,1,procesador))
+procesador.cargarInstrucciones(Add(5,9,10,procesador))
 
 
 

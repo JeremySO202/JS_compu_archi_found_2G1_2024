@@ -5,7 +5,7 @@ class BranchEqual:
         self.offset = _offset
         self.procesador = _procesador
 
-        self.ejecucion = [self.instruccion1, self.instruccion2, self.instruccion3]
+        self.ejecucion = [self.instruccion1, self.instruccion2]
 
     def instruccion1(self):
         print(f"Obteniendo valores de registros {self.registro1} y {self.registro2}")
@@ -19,15 +19,20 @@ class BranchEqual:
         self.procesador.regALU.data = self.procesador.ALU.operar(
             self.procesador.regRF.data[0], self.procesador.regRF.data[1], 1
         )
-        print(f"Resultado de la resta: {self.procesador.regALU.data}")
+        print(f"Salto tomado: {self.procesador.regALU.data == 0}")
+
+        """Manejo del BranchEqual dentro del procesador."""
+        instruction_id = id(self)
+
+        # Obtener la predicción del salto
+        predicted_taken = self.procesador.branch_predictor.predict(instruction_id)
+        if not predicted_taken and self.procesador.regALU.data == 0:
+            self.procesador.PC += self.offset - 1
+            self.procesador.clear_pipeline()
 
 
 
-    def instruccion3(self):
-        print("Finalizando BranchEqual. No hay resultado que guardar en registros.")
 
-    def instruccion4(self):
-        pass
 
     def ejecutar(self):
         if self.ejecucion:
@@ -35,4 +40,3 @@ class BranchEqual:
             fase()
         else:
             print("No hay más fases para ejecutar en BranchEqual.")
-
