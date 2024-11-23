@@ -7,6 +7,9 @@ from elementosArquitectonicos.archivoRegistros import archivoRegistros
 from elementosNoArquitectonicos.registro import Registro
 from instrucciones.branch import BranchEqual  # Importar BranchEqual
 
+
+
+
 class Procesador:
     def __init__(self):
         self.PC = 0
