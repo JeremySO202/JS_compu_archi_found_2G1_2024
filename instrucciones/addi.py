@@ -9,13 +9,15 @@ class Addi:
 
     def instruccion1(self):
         print("Obteniendo de registro "+str(self.registro1))
-        
+
         self.procesador.regRF.data = self.procesador.RF.registros[self.registro1]
         
         print(self.procesador.regRF.data)
 
     def instruccion2(self):
         print("Sumando ")
+        if self.procesador.regRF.data is None:
+            raise ValueError(f"El registro {self.registro1} tiene un valor None y no puede sumarse.")
         self.procesador.regALU.data = self.procesador.ALU.operar(self.procesador.regRF.data, self.inmediate, 0)
         print(self.procesador.regALU.data)
 
@@ -26,7 +28,7 @@ class Addi:
 
     def instruccion4(self):
         pass
-        
+
 
     def ejecutar(self):
         if self.ejecucion:
