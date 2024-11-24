@@ -4,7 +4,7 @@ import pygame
 pygame.init()
 
 class PygameInterface:
-    def __init__(self, width=700, height=600):
+    def __init__(self, width=700, height=800):
         # Configuración de la ventana
         self.width = width
         self.height = height
@@ -20,19 +20,20 @@ class PygameInterface:
         self.BLUE = (0, 0, 255)
         self.GREEN = (0, 255, 0)
         self.YELLOW = (255, 255, 0)
+        
 
         # Estado inicial
         self.time = 0
         self.pc_value = 0
-        self.register_values = [0] * 8
-        self.memory_content = [0] * 16
+        self.register_values = [0] * 16
+        self.memory_content = [0] * 32
         self.pipeline_stages = ["Fetch", "Decode", "Execute", "Memory", "Writeback"]
         self.pipeline_locations = [""] * len(self.pipeline_stages)
 
         # Cuadros de la interfaz
         self.components_rect = pygame.Rect(30, 30, 640, 300)
-        self.status_left_rect = pygame.Rect(30, 350, 320, 220)
-        self.status_right_rect = pygame.Rect(360, 350, 320, 220)
+        self.status_left_rect = pygame.Rect(30, 350, 320, 420)
+        self.status_right_rect = pygame.Rect(360, 350, 320, 420)
 
         # Configuración de componentes
         self.component_width = 120
@@ -138,14 +139,16 @@ class PygameInterface:
         self.draw_status_left()
         self.draw_status_right()
 
+
     def draw_status_left(self):
-        """Dibuja el estado del lado izquierdo."""
+        #"""Dibuja el estado del lado izquierdo con registros en dos columnas."""
         elapsed_time = self.time
         info_x = self.status_left_rect.x + 10
         info_y = self.status_left_rect.y + 10
 
         pygame.draw.rect(self.screen, self.WHITE, self.status_left_rect)
 
+        # Ciclo y tiempo
         cycle_text = self.font.render(f"Ciclo de ejecución: {self.pc_value // 4}", True, self.BLACK)
         self.screen.blit(cycle_text, (info_x, info_y))
 
@@ -155,24 +158,47 @@ class PygameInterface:
         pc_text = self.font.render(f"Valor del PC: {self.pc_value}", True, self.BLACK)
         self.screen.blit(pc_text, (info_x, info_y + 40))
 
-        reg_text = self.font.render(f"Valores de los registros: {self.register_values}", True, self.BLACK)
-        self.screen.blit(reg_text, (info_x, info_y + 60))
+        # Dibujar registros en dos columnas
+        reg_text = self.font.render("Registros:", True, self.BLACK)
+        self.screen.blit(reg_text, (info_x, info_y + 70))
+
+        column1_x = info_x + 10
+        column2_x = info_x + 160
+        for i in range(len(self.register_values) // 2):
+            reg_1 = self.font.render(f"R{i}: {self.register_values[i]}", True, self.BLACK)
+            reg_2 = self.font.render(f"R{i + 8}: {self.register_values[i + 8]}", True, self.BLACK)
+            self.screen.blit(reg_1, (column1_x, info_y + 90 + i * 20))
+            self.screen.blit(reg_2, (column2_x, info_y + 90 + i * 20))
+
+
+        # Pipeline
+        pipeline_text = self.font.render("Ubicación de instrucciones en el pipeline:", True, self.BLACK)
+        self.screen.blit(pipeline_text, (info_x, info_y + 250))
+        for i, stage in enumerate(self.pipeline_stages):
+            stage_text = self.font.render(f"{stage}: {self.pipeline_locations[i]}", True, self.BLACK)
+            self.screen.blit(stage_text, (info_x, info_y + 270 + i * 20))
 
     def draw_status_right(self):
-        """Dibuja el estado del lado derecho."""
+        """Dibuja el estado del lado derecho con memoria en dos columnas."""
         info_x = self.status_right_rect.x + 10
         info_y = self.status_right_rect.y + 10
 
         pygame.draw.rect(self.screen, self.WHITE, self.status_right_rect)
 
-        memory_text = self.font.render(f"Contenido de memoria: {self.memory_content}", True, self.BLACK)
+        # Título de memoria
+        memory_text = self.font.render("Memoria:", True, self.BLACK)
         self.screen.blit(memory_text, (info_x, info_y))
 
-        pipeline_text = self.font.render("Ubicación de instrucciones en el pipeline:", True, self.BLACK)
-        self.screen.blit(pipeline_text, (info_x, info_y + 40))
-        for i, stage in enumerate(self.pipeline_stages):
-            stage_text = self.font.render(f"{stage}: {self.pipeline_locations[i]}", True, self.BLACK)
-            self.screen.blit(stage_text, (info_x + 20, info_y + 60 + i * 15))
+        # Dibujar memoria en dos columnas
+        column1_x = info_x + 10
+        column2_x = info_x + 160
+        for i in range(len(self.memory_content) // 2):
+            mem_1 = self.font.render(f"M{i}: {self.memory_content[i]}", True, self.BLACK)
+            mem_2 = self.font.render(f"M{i + 16}: {self.memory_content[i + 16]}", True, self.BLACK)
+            self.screen.blit(mem_1, (column1_x, info_y + 20 + i * 20))
+            self.screen.blit(mem_2, (column2_x, info_y + 20 + i * 20))
+
+        
 
     def run(self):
         """Bucle principal de la interfaz gráfica."""

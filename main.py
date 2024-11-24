@@ -20,8 +20,8 @@ procesador.RF.registros[9] = 5;
 procesador.RF.registros[10] = 10;
 
 
-#procesador.cargarInstrucciones(StoreWord(0,-4,4,procesador))
-#procesador.cargarInstrucciones(StoreWord(1,-3,4,procesador))
+procesador.cargarInstrucciones(StoreWord(0,-4,4,procesador))
+procesador.cargarInstrucciones(StoreWord(1,-3,4,procesador))
 
 procesador.cargarInstrucciones(BranchEqual(0,1,4,procesador))
 

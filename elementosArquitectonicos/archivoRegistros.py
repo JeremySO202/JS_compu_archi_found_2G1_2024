@@ -1,3 +1,3 @@
 class archivoRegistros:
     def __init__(self):
-        self.registros = [None]*32
+        self.registros = [None]*16
