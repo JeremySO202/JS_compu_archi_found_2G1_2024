@@ -7,6 +7,9 @@ from elementosArquitectonicos.memoriaInstrucciones import memoriaInstrucciones
 from elementosArquitectonicos.archivoRegistros import archivoRegistros
 from elementosNoArquitectonicos.registro import Registro
 
+
+
+
 class Procesador:
     def __init__(self):
         self.PC = 0
