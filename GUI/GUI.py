@@ -50,6 +50,11 @@ class PygameInterface:
         # Estado del bucle principal
         self.running = True
 
+    def update_pipeline_locations(self, locations):
+        """Actualiza las ubicaciones de las instrucciones en el pipeline."""
+        if len(locations) == len(self.pipeline_stages):
+            self.pipeline_locations = locations
+
     def _initialize_components(self):
         """Inicializa los rectángulos de los componentes."""
         return [
