@@ -28,6 +28,10 @@ class Procesador:
         # Inicializa las ubicaciones del pipeline
         self.pipeline_locations = ["", "", "", "", ""]
 
+        # Métricas de desempeño
+        self.total_cycles = 0
+        self.instructions_completed = 0
+
         # Interfaz gráfica
         self.gui = GUI.PygameInterface()
 
@@ -47,8 +51,11 @@ class Procesador:
 
     def iniciarEjecucion(self):
         execute = True
+        start_time = time.time()  # Marca de tiempo inicial
 
         while execute:
+            self.total_cycles += 1  # Incrementar ciclos totales en cada iteración
+
             # WRITEBACK
             execute = False
             print("Etapa WRITEBACK")
@@ -58,6 +65,7 @@ class Procesador:
                 self.regDM.instruccion.ejecutar()
                 self.pipeline_locations[4] = "Instrucción escribiendo"
                 self.regDM.clear()
+                self.instructions_completed += 1  # Incrementar instrucciones completadas
             else:
                 print("No hay instrucción en esta etapa")
                 self.pipeline_locations[4] = ""
@@ -121,14 +129,26 @@ class Procesador:
 
             print("#####################################")
 
-            # Actualiza la interfaz
+            # Calcular métricas
+            elapsed_time = time.time() - start_time  # Tiempo total en segundos
+            if elapsed_time > 0:  # Evitar cálculos con tiempo 0
+                cpi = self.total_cycles / max(1, self.instructions_completed)
+                ipc = self.instructions_completed / max(1, self.total_cycles)
+                clock_rate = self.total_cycles / (elapsed_time * 1e9)  # Clock Rate en GHz
+            else:
+                clock_rate = 0
+
+            # Debugging: Verificar cálculos
+            print(f"Total Cycles: {self.total_cycles}, Instructions Completed: {self.instructions_completed}, Elapsed Time: {elapsed_time}, Clock Rate: {clock_rate} GHz")
+
+            # Actualizar la GUI
             self.gui.update_pipeline_locations(self.pipeline_locations)
-            self.time = self.time + 10
+            self.gui.update_performance_metrics(cpi, ipc, clock_rate)
+            self.time += 10
             self.gui.update_pc_value(self.PC)
             self.gui.update_time_value(self.time)
             self.gui.update_register_values(self.RF.registros)
             self.gui.update_memory_content(self.DM.datos)
+
+            # Simulación: ralentizar ejecución para observar cambios
             time.sleep(1)
-
-
-            

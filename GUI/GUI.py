@@ -3,6 +3,8 @@ import pygame
 
 pygame.init()
 
+import pygame
+
 class PygameInterface:
     def __init__(self, width=700, height=800):
         # Configuración de la ventana
@@ -12,6 +14,11 @@ class PygameInterface:
         pygame.display.set_caption("Componentes Interactivos con Inicializador")
         self.font = pygame.font.Font(None, 20)
 
+        # Métricas de desempeño
+        self.cpi = 0.0
+        self.ipc = 0.0
+        self.clock_rate = 0.0  # Clock rate en GHz
+
         # Configuración de colores
         self.LIGHT_GRAY = (230, 230, 230)
         self.WHITE = (255, 255, 255)
@@ -20,7 +27,6 @@ class PygameInterface:
         self.BLUE = (0, 0, 255)
         self.GREEN = (0, 255, 0)
         self.YELLOW = (255, 255, 0)
-        
 
         # Estado inicial
         self.time = 0
@@ -50,10 +56,37 @@ class PygameInterface:
         # Estado del bucle principal
         self.running = True
 
+    def update_performance_metrics(self, cpi, ipc, clock_rate):
+        """Actualiza las métricas de desempeño CPI, IPC y Clock Rate."""
+        self.cpi = cpi
+        self.ipc = ipc
+        if clock_rate < 1:
+            self.clock_rate = f"{clock_rate:.2e} GHz"  # Notación científica
+        else:
+            self.clock_rate = f"{clock_rate:.2f} GHz"  # Decimal con 2 decimales
+
     def update_pipeline_locations(self, locations):
         """Actualiza las ubicaciones de las instrucciones en el pipeline."""
         if len(locations) == len(self.pipeline_stages):
             self.pipeline_locations = locations
+
+    def update_time_value(self, value):
+        """Actualiza el valor del tiempo."""
+        self.time = value
+
+    def update_pc_value(self, value):
+        """Actualiza el valor del PC."""
+        self.pc_value = value
+
+    def update_register_values(self, values):
+        """Actualiza los valores de los registros."""
+        if len(values) == len(self.register_values):
+            self.register_values = values
+
+    def update_memory_content(self, values):
+        """Actualiza el contenido de la memoria."""
+        if len(values) == len(self.memory_content):
+            self.memory_content = values
 
     def _initialize_components(self):
         """Inicializa los rectángulos de los componentes."""
@@ -94,26 +127,6 @@ class PygameInterface:
                 self.components[index]["highlight"] = True
                 self.components[index]["color"] = color
 
-
-    def update_time_value(self, value):
-        """Actualiza el valor del PC."""
-        self.time = value
-
-    def update_pc_value(self, value):
-        """Actualiza el valor del PC."""
-        self.pc_value = value
-
-    
-    def update_register_values(self, values):
-        """Actualiza los valores de los registros."""
-        if len(values) == len(self.register_values):
-            self.register_values = values
-
-    def update_memory_content(self, values):
-        """Actualiza el contenido de la memoria."""
-        if len(values) == len(self.memory_content):
-            self.memory_content = values
-
     def draw(self):
         """Dibuja la interfaz en pantalla."""
         self.screen.fill(self.LIGHT_GRAY)
@@ -144,9 +157,8 @@ class PygameInterface:
         self.draw_status_left()
         self.draw_status_right()
 
-
     def draw_status_left(self):
-        #"""Dibuja el estado del lado izquierdo con registros en dos columnas."""
+        # Dibuja el estado del lado izquierdo con registros en dos columnas.
         elapsed_time = self.time
         info_x = self.status_left_rect.x + 10
         info_y = self.status_left_rect.y + 10
@@ -163,25 +175,35 @@ class PygameInterface:
         pc_text = self.font.render(f"Valor del PC: {self.pc_value}", True, self.BLACK)
         self.screen.blit(pc_text, (info_x, info_y + 40))
 
-        # Dibujar registros en dos columnas
+        # Métricas de desempeño
+        cpi_text = self.font.render(f"CPI: {self.cpi:.2f}", True, self.BLACK)
+        clock_text = self.font.render(f"Clock Rate: {self.clock_rate}", True, self.BLACK)
+
+        self.screen.blit(clock_text, (info_x + 150, info_y + 70))  # A la derecha de CPI
+
+        ipc_text = self.font.render(f"IPC: {self.ipc:.2f}", True, self.BLACK)
+
+        self.screen.blit(cpi_text, (info_x, info_y + 70))
+        self.screen.blit(ipc_text, (info_x, info_y + 90))
+
+        # Dibujar registros en dos columnas (subidos ligeramente)
         reg_text = self.font.render("Registros:", True, self.BLACK)
-        self.screen.blit(reg_text, (info_x, info_y + 70))
+        self.screen.blit(reg_text, (info_x, info_y + 110))  # Antes: info_y + 120
 
         column1_x = info_x + 10
         column2_x = info_x + 160
         for i in range(len(self.register_values) // 2):
             reg_1 = self.font.render(f"R{i}: {self.register_values[i]}", True, self.BLACK)
             reg_2 = self.font.render(f"R{i + 8}: {self.register_values[i + 8]}", True, self.BLACK)
-            self.screen.blit(reg_1, (column1_x, info_y + 90 + i * 20))
-            self.screen.blit(reg_2, (column2_x, info_y + 90 + i * 20))
+            self.screen.blit(reg_1, (column1_x, info_y + 130 + i * 20))  # Antes: info_y + 140
+            self.screen.blit(reg_2, (column2_x, info_y + 130 + i * 20))  # Antes: info_y + 140
 
-
-        # Pipeline
+        # Pipeline (subido ligeramente)
         pipeline_text = self.font.render("Ubicación de instrucciones en el pipeline:", True, self.BLACK)
-        self.screen.blit(pipeline_text, (info_x, info_y + 250))
+        self.screen.blit(pipeline_text, (info_x, info_y + 290))  # Antes: info_y + 280
         for i, stage in enumerate(self.pipeline_stages):
             stage_text = self.font.render(f"{stage}: {self.pipeline_locations[i]}", True, self.BLACK)
-            self.screen.blit(stage_text, (info_x, info_y + 270 + i * 20))
+            self.screen.blit(stage_text, (info_x, info_y + 310 + i * 20))  # Antes: info_y + 300
 
     def draw_status_right(self):
         """Dibuja el estado del lado derecho con memoria en dos columnas."""
@@ -203,8 +225,6 @@ class PygameInterface:
             self.screen.blit(mem_1, (column1_x, info_y + 20 + i * 20))
             self.screen.blit(mem_2, (column2_x, info_y + 20 + i * 20))
 
-        
-
     def run(self):
         """Bucle principal de la interfaz gráfica."""
         while self.running:
@@ -218,3 +238,4 @@ class PygameInterface:
 
         # Finalización segura de Pygame
         pygame.quit()
+
