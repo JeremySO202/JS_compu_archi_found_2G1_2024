@@ -14,7 +14,7 @@ from instrucciones.or_ import Or
 from GUI import GUI
 
 class ProcesadorFullHazard:
-    def __init__(self):
+    def __init__(self, interval=1):
         self.PC = 0
         self.IM = memoriaInstrucciones()
         self.regIM = Registro()
@@ -28,7 +28,7 @@ class ProcesadorFullHazard:
         self.branch_predictor = BranchPredictor(default_prediction=True)  # Instancia de BranchPredictor
 
         self.time = 1
-        self.interval = 1
+        self.interval = interval
         self.total_cycles = 0  # Contador de ciclos totales
         self.instructions_completed = 0  # Contador de instrucciones completadas
         self.pipeline_locations = ["", "", "", "", ""]  # Inicializa las ubicaciones del pipeline
