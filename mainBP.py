@@ -38,7 +38,7 @@ procesador.cargarInstrucciones(And(9, 8, 2, procesador))  # R9 = R8 & R2
 procesador.cargarInstrucciones(Or(10, 1, 6, procesador))  # R10 = R1 | R6
 
 procesador.iniciarEjecucion()
-
+'''
 # Reinicia el procesador para los siguientes casos
 procesador = ProcesadorBranchPrediction()
 
@@ -73,3 +73,4 @@ procesador.cargarInstrucciones(Or(10, 1, 6, procesador))  # R10 = R1 | R6
 
 # Iniciar ejecución
 procesador.iniciarEjecucion()
+'''

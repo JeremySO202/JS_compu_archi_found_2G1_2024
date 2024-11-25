@@ -29,7 +29,8 @@ class ProcesadorForwarding:
         self.hazard_control = HazardControl(self)
         self.branch_predictor = BranchPredictor(default_prediction=False)  # Instancia de BranchPredictor
 
-        self.time = 0
+        self.time = 1
+        self.interval = 1
         self.total_cycles = 0  # Contador de ciclos totales
         self.instructions_completed = 0  # Contador de instrucciones completadas
         self.pipeline_locations = ["", "", "", "", ""]  # Inicializa las ubicaciones del pipeline
@@ -148,7 +149,7 @@ class ProcesadorForwarding:
             print("#####################################")
 
             # Calcular métricas de desempeño
-            elapsed_time = time.time() - start_time  # Tiempo total en segundos
+            elapsed_time = self.time  # Tiempo total en segundos
             if elapsed_time > 0:  # Evitar división por cero
                 cpi = self.total_cycles / max(1, self.instructions_completed)
                 ipc = self.instructions_completed / max(1, self.total_cycles)
@@ -162,11 +163,14 @@ class ProcesadorForwarding:
             # Actualizar la GUI
             self.gui.update_pipeline_locations(self.pipeline_locations)
             self.gui.update_performance_metrics(cpi, ipc, clock_rate)
-            self.time += 10
+            self.time += 12
             self.gui.update_pc_value(self.PC)
             self.gui.update_time_value(self.time)
             self.gui.update_register_values(self.RF.registros)
             self.gui.update_memory_content(self.DM.datos)
 
             # Simulación: ralentizar ejecución para observar cambios
-            time.sleep(1)
+            time.sleep(self.interval)
+
+        self.gui.stop()
+        self.gui_thread.join

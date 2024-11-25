@@ -23,7 +23,8 @@ class Procesador:
         self.regDM = Registro()
         self.jump_pending = False  # Señal para manejar saltos
         self.branch_predictor = BranchPredictor(default_prediction=False)  # Instancia de BranchPredictor
-        self.time = 0
+        self.time = 1
+        self.interval = 1
 
         # Inicializa las ubicaciones del pipeline
         self.pipeline_locations = ["", "", "", "", ""]
@@ -130,7 +131,7 @@ class Procesador:
             print("#####################################")
 
             # Calcular métricas
-            elapsed_time = time.time() - start_time  # Tiempo total en segundos
+            elapsed_time = self.time # Tiempo total en segundos
             if elapsed_time > 0:  # Evitar cálculos con tiempo 0
                 cpi = self.total_cycles / max(1, self.instructions_completed)
                 ipc = self.instructions_completed / max(1, self.total_cycles)
@@ -151,4 +152,7 @@ class Procesador:
             self.gui.update_memory_content(self.DM.datos)
 
             # Simulación: ralentizar ejecución para observar cambios
-            time.sleep(1)
+            time.sleep(self.interval)
+
+        self.gui.stop()
+        self.gui_thread.join

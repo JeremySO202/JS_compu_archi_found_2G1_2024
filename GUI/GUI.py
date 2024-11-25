@@ -1,9 +1,10 @@
 import pygame
+
 #import time
 
 pygame.init()
 
-import pygame
+
 
 class PygameInterface:
     def __init__(self, width=700, height=800):
@@ -35,6 +36,7 @@ class PygameInterface:
         self.memory_content = [0] * 32
         self.pipeline_stages = ["Fetch", "Decode", "Execute", "Memory", "Writeback"]
         self.pipeline_locations = [""] * len(self.pipeline_stages)
+        
 
         # Cuadros de la interfaz
         self.components_rect = pygame.Rect(30, 30, 640, 300)
@@ -55,6 +57,7 @@ class PygameInterface:
 
         # Estado del bucle principal
         self.running = True
+
 
     def update_performance_metrics(self, cpi, ipc, clock_rate):
         """Actualiza las métricas de desempeño CPI, IPC y Clock Rate."""
@@ -169,7 +172,7 @@ class PygameInterface:
         cycle_text = self.font.render(f"Ciclo de ejecución: {self.pc_value // 4}", True, self.BLACK)
         self.screen.blit(cycle_text, (info_x, info_y))
 
-        time_text = self.font.render(f"Tiempo desde inicio: {elapsed_time:.2f} segundos", True, self.BLACK)
+        time_text = self.font.render(f"Tiempo desde inicio: {elapsed_time:.2f}  nano segundos", True, self.BLACK)
         self.screen.blit(time_text, (info_x, info_y + 20))
 
         pc_text = self.font.render(f"Valor del PC: {self.pc_value}", True, self.BLACK)
@@ -239,3 +242,6 @@ class PygameInterface:
         # Finalización segura de Pygame
         pygame.quit()
 
+    def stop(self):
+        """Detiene el bucle principal de la interfaz."""
+        self.running = False
