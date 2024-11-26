@@ -5,7 +5,7 @@ class StoreWord:
         self.fuente = _fuente
         self.procesador = _procesador
 
-        self.ejecucion = [self.instruccion1, self.instruccion2, self.instruccion3,self.instruccion4]
+        self.ejecucion = [self.instruccion1, self.instruccion2, self.instruccion3]
 
     def instruccion1(self):
         print("Obteniendo de registro "+str(self.fuente))
@@ -24,8 +24,6 @@ class StoreWord:
         self.procesador.DM.datos[self.procesador.regALU.data[0]] = self.procesador.regALU.data[1]
         print(self.procesador.regALU.data[1])
 
-    def instruccion4(self):
-        print("StoreWord no escribe en registro")
 
 
     def ejecutar(self):
